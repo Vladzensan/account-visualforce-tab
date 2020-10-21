@@ -1,0 +1,46 @@
+<apex:page controller="AccountController">     
+
+    <apex:form>
+    <apex:pageBlock >
+
+         <!-- Choose account -->
+        <apex:OutputPanel>
+            <apex:selectList value="{!selectedId}" size="1" multiselect="false"  >
+                <apex:selectOptions value="{!accountOptions}" />
+                <apex:actionSupport event="onchange" action="{!handleAccountChange}" reRender="accountInfo"/>
+            </apex:selectList>
+        </apex:OutputPanel>   
+
+        <apex:pageBlockSection title="Account info" columns="1" id="accountInfo" rendered = "{! IF(acc != null, true, false) }">
+            <!-- Account Info -->
+            <apex:pageBlockSection >
+                <apex:outputField value="{! acc.Name }"/>
+                <apex:outputField value="{! acc.AccountNumber }"/>
+                <apex:outputField value="{! acc.Type }"/>
+                <apex:outputField value="{! acc.AnnualRevenue }"/>
+                <apex:outputField value="{! acc.Phone }"/>
+                <apex:outputField value="{! acc.Industry }"/>
+                <apex:outputField value="{! acc.Rating }"/>
+                <apex:outputField value="{! acc.SLAExpirationDate__c }"/>
+                <apex:outputField value="{! acc.Fax }"/>
+                <apex:outputField value="{! acc.NumberOfEmployees }"/>
+            </apex:pageBlockSection>
+
+
+            <!-- Related contacts -->
+            <apex:pageBlockTable id="contactsTable" value="{!contacts}" var="contact">
+                <apex:column value="{!contact.Name}"/>
+                <apex:column value="{!contact.Title}"/>
+                <apex:column value="{!contact.Phone}"/>
+            </apex:pageBlockTable>
+            
+            <!-- Paginator buttons -->
+            <apex:outputPanel>
+                <apex:commandLink action="{!handlePreviousPage}" value="<-Previous" rendered="{! hasPreviousPage }"/>
+                <apex:commandLink action="{!handleNextPage}" value="Next->" rendered="{! hasNextPage }"/>
+            </apex:outputPanel>
+        </apex:pageBlockSection>
+
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>
