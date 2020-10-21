@@ -4,15 +4,30 @@
     <apex:pageBlock >
 
          <!-- Choose account -->
-        <apex:OutputPanel>
+        <apex:OutputPanel id="header">
             <apex:selectList value="{!selectedId}" size="1" multiselect="false"  >
                 <apex:selectOptions value="{!accountOptions}" />
                 <apex:actionSupport event="onchange" action="{!handleAccountChange}" reRender="accountInfo"/>
             </apex:selectList>
+            <apex:commandButton action="{!handleOpenAccForm}" value="Create account"/>
         </apex:OutputPanel>   
 
+        <!-- Create account -->
+        <apex:pageBlockSection title="Create account" id="newAccountForm" columns="1" rendered="{! isCreateAccount }">
+            <apex:inputField value="{! newAcc.Name }"/>
+            <apex:inputField value="{! newAcc.Type }"/>
+            <apex:inputField value="{! newAcc.Phone }"/>
+            <apex:inputField value="{! newAcc.Industry }"/>
+            <apex:inputField value="{! newAcc.Fax }"/>
+            <apex:outputPanel>
+                <apex:commandButton action="{!handleCloseAccForm}" immediate="true" value="Close form"/>
+                <apex:commandButton action="{!handleSaveAccount}" value="Save"/>
+            </apex:outputPanel>
+      </apex:pageBlockSection>
+
         <apex:pageBlockSection title="Account info" columns="1" id="accountInfo" rendered = "{! IF(acc != null, true, false) }">
-            <!-- Account Info -->
+
+            <!-- Account details -->
             <apex:pageBlockSection >
                 <apex:outputField value="{! acc.Name }"/>
                 <apex:outputField value="{! acc.AccountNumber }"/>
@@ -26,19 +41,33 @@
                 <apex:outputField value="{! acc.NumberOfEmployees }"/>
             </apex:pageBlockSection>
 
+            <apex:pageBlockSection id="contactsTable">
 
-            <!-- Related contacts -->
-            <apex:pageBlockTable id="contactsTable" value="{!contacts}" var="contact">
-                <apex:column value="{!contact.Name}"/>
-                <apex:column value="{!contact.Title}"/>
-                <apex:column value="{!contact.Phone}"/>
-            </apex:pageBlockTable>
-            
-            <!-- Paginator buttons -->
-            <apex:outputPanel>
-                <apex:commandLink action="{!handlePreviousPage}" value="<-Previous" rendered="{! hasPreviousPage }"/>
-                <apex:commandLink action="{!handleNextPage}" value="Next->" rendered="{! hasNextPage }"/>
-            </apex:outputPanel>
+                <!-- Related contacts -->
+                <apex:pageBlockTable value="{!contacts}" var="contact">
+                    <apex:column value="{!contact.Name}"/>
+                    <apex:column value="{!contact.Title}"/>
+                    <apex:column value="{!contact.Phone}"/>
+                </apex:pageBlockTable>
+                
+                
+                <apex:commandButton action="{!handleOpenContactForm}" value="Create contact" rendered="{! IF(acc != null, true, false) }"/>
+                
+                <!-- Paginator buttons -->
+                <apex:commandButton action="{!handlePreviousPage}" value="<-Previous" reRender="contactsTable" rendered="{! hasPreviousPage }"/>
+                <apex:commandButton action="{!handleNextPage}" value="Next->" reRender="contactsTable" rendered="{! hasNextPage }"/>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Add contact" id="newContactForm" columns="1" rendered="{! isCreateContact }">
+                <apex:inputField value="{! newContact.FirstName }"/>
+                <apex:inputField value="{! newContact.LastName }"/>
+                <apex:inputField value="{! newContact.Title }"/>
+                <apex:inputField value="{! newContact.Phone }"/>
+                <apex:outputPanel>
+                    <apex:commandButton action="{!handleCloseContactForm}" immediate="true" value="Close form"/>
+                    <apex:commandButton action="{!handleSaveContact}" value="Save" />
+                </apex:outputPanel>
+            </apex:pageBlockSection>
         </apex:pageBlockSection>
 
     </apex:pageBlock>
